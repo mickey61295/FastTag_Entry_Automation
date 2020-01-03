@@ -12,11 +12,12 @@ wb = openpyxl.load_workbook(filename)
 sh = wb['Sheet1']
 tran = []
 stat = []
+amount = []
 count = sh.max_row+1
 for i in range(2, count):
     tran.append(sh.cell(row=i, column=1).value)
 
-chromedriver = filedialog.askopenfilename(initialdir="/",title="Open File",filetypes=(("Executable", "*.exe"), ("All Files", "*.*")))x`
+chromedriver = filedialog.askopenfilename(initialdir="/",title="Open File",filetypes=(("Executable", "*.exe"), ("All Files", "*.*")))
 browser = webdriver.Chrome(chromedriver)
 browser.get('https://fastagcsc.bankofbaroda.com/BOBPOS/Default.aspx')
 user_n = browser.find_element_by_id('txtUserName')
@@ -34,12 +35,17 @@ for i in range(0,len(tran)):
         status = browser.find_element_by_xpath('//*[@id="BodyContent_gvDeposits"]/tbody/tr[2]/td[5]').text
     except:
         status = 'Nope'
+    try:
+        amt = int(float(browser.find_element_by_xpath('//*[@id="BodyContent_gvDeposits"]/tbody/tr[2]/td[4]').text))
+    except:
+        amt = 'NA'
     browser.find_element_by_id('BodyContent_btnSearchReset').click()
     stat.append(status)
-        
+    amount.append(amt)
 for i in range(2,count+2):
     try:
         sh.cell(row=i, column=4).value = stat[i-2]
+        sh.cell(row=i, column=5).value = amount[i-2]
         if sh.cell(row=i, column=4).value == 'Approved':
             sh.cell(row=i, column=4).fill = PatternFill(fill_type='solid', start_color='00ff00', end_color='00ff00')
         if sh.cell(row=i, column=4).value == 'Rejected':
