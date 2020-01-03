@@ -36,7 +36,8 @@ for i in range(0,len(tran)):
     except:
         status = 'Nope'
     try:
-        amt = int(float(browser.find_element_by_xpath('//*[@id="BodyContent_gvDeposits"]/tbody/tr[2]/td[4]').text))
+        amt = browser.find_element_by_xpath('//*[@id="BodyContent_gvDeposits"]/tbody/tr[2]/td[4]').text
+        amt = int(float(amt.replace(',','')))
     except:
         amt = 'NA'
     browser.find_element_by_id('BodyContent_btnSearchReset').click()
